@@ -22,5 +22,7 @@ public class MotorState {
     private MotorStatus status;
 
     private boolean autoControlEnabled;
+    private Integer autoDurationSeconds;
+    private Integer manualDurationSeconds;
     private LocalDateTime updatedAt;
 }

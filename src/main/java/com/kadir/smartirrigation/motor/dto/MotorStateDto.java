@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class MotorStateDto {
     private String status;
     private boolean autoControlEnabled;
+    private Integer autoDurationSeconds;
+    private Integer manualDurationSeconds;
 }

@@ -1,6 +1,7 @@
 package com.kadir.smartirrigation.sensor.service.impl;
 
 import com.kadir.smartirrigation.motor.dto.MotorStateDto;
+import com.kadir.smartirrigation.motor.dto.OnOffDto;
 import com.kadir.smartirrigation.motor.service.MotorService;
 import com.kadir.smartirrigation.sensor.dto.SensorlDataRequestDto;
 import com.kadir.smartirrigation.sensor.dto.SensorDataResponseDto;
@@ -56,16 +57,14 @@ public class SensorDataServiceImpl implements SensorDataService {
 
         if (!currentState.isAutoControlEnabled()) return;
 
-        MotorStateDto newState = new MotorStateDto();
-        newState.setAutoControlEnabled(true);
+        OnOffDto newState = new OnOffDto();
 
         if (sensorData.getSoilMoistureAdc() > threshold) {
-            System.out.println("buraya girdi");
             newState.setStatus("ON");
         } else {
             newState.setStatus("OFF");
         }
 
-        motorService.updateStatus(newState);
+        motorService.updateStatus(newState, true);
     }
 }
