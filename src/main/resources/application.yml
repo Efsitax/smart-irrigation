@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: smart-irrigation
+  datasource:
+    url: jdbc:h2:mem:smartdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+server:
+  port: 8080
+
+irrigation:
+  threshold: 2000
