@@ -4,7 +4,9 @@ import com.kadir.smartirrigation.motor.dto.AutoControlRequestDto;
 import com.kadir.smartirrigation.motor.dto.DurationDto;
 import com.kadir.smartirrigation.motor.dto.MotorStateDto;
 import com.kadir.smartirrigation.motor.dto.OnOffDto;
+import com.kadir.smartirrigation.common.enums.TurnOnStatus;
 import com.kadir.smartirrigation.motor.service.MotorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/motor")
 @RequiredArgsConstructor
 public class MotorController {
-
     private final MotorService service;
     private final MotorService motorService;
 
     @PutMapping
-    public ResponseEntity<String> update(@RequestBody OnOffDto dto) {
-        service.updateStatus(dto, false);
+    public ResponseEntity<String> update(@Valid @RequestBody OnOffDto dto) {
+        service.updateStatus(dto, TurnOnStatus.MANUAL);
         return ResponseEntity.ok("Motor state updated: " + dto.getStatus());
     }
 
@@ -30,7 +31,7 @@ public class MotorController {
     }
 
     @PutMapping("/duration")
-    public void updateDuration(@RequestBody DurationDto dto) {
+    public void updateDuration(@Valid @RequestBody DurationDto dto) {
         motorService.updateDuration(dto);
     }
 

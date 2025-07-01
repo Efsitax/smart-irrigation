@@ -1,5 +1,6 @@
 package com.kadir.smartirrigation.motor.model;
 
+import com.kadir.smartirrigation.common.enums.MotorStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

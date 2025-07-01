@@ -3,8 +3,9 @@ package com.kadir.smartirrigation.motor.service.impl;
 import com.kadir.smartirrigation.motor.dto.DurationDto;
 import com.kadir.smartirrigation.motor.dto.MotorStateDto;
 import com.kadir.smartirrigation.motor.dto.OnOffDto;
+import com.kadir.smartirrigation.common.enums.TurnOnStatus;
 import com.kadir.smartirrigation.motor.model.MotorState;
-import com.kadir.smartirrigation.motor.model.MotorStatus;
+import com.kadir.smartirrigation.common.enums.MotorStatus;
 import com.kadir.smartirrigation.motor.repository.MotorStateRepository;
 import com.kadir.smartirrigation.motor.service.MotorService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class MotorServiceImpl implements MotorService {
     private ScheduledFuture<?> autoOffTask;
 
     @Override
-    public void updateStatus(OnOffDto dto, boolean isAuto) {
+    public void updateStatus(OnOffDto dto, TurnOnStatus turnOnStatus) {
         MotorState state = handleDefaultMotorState();
 
         if (dto.getStatus() != null && !dto.getStatus().isBlank()) {
@@ -33,10 +34,10 @@ public class MotorServiceImpl implements MotorService {
             if (status != null) {
                 state.setStatus(status);
                 if (status == MotorStatus.ON) {
-                    int duration = isAuto
-                            ? state.getAutoDurationSeconds()
-                            : state.getManualDurationSeconds();
-                    scheduleAutoTurnOff(duration);
+                    switch (turnOnStatus) {
+                        case AUTO -> scheduleAutoTurnOff(state.getAutoDurationSeconds());
+                        case MANUAL -> scheduleAutoTurnOff(state.getManualDurationSeconds());
+                    }
                 } else if (autoOffTask != null && !autoOffTask.isDone()) {
                     autoOffTask.cancel(true);
                 }
@@ -79,6 +80,15 @@ public class MotorServiceImpl implements MotorService {
                 state.getAutoDurationSeconds(),
                 state.getManualDurationSeconds()
         );
+    }
+
+    @Override
+    public void runWithDuration(int seconds) {
+        updateStatus(new OnOffDto("ON"), TurnOnStatus.SCHEDULED);
+
+        scheduler.schedule(() -> {
+            updateStatus(new OnOffDto("OFF"), TurnOnStatus.SCHEDULED);
+        }, seconds, TimeUnit.SECONDS);
     }
 
     private MotorState handleDefaultMotorState() {

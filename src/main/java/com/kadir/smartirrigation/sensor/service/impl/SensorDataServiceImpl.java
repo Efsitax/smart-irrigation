@@ -2,9 +2,11 @@ package com.kadir.smartirrigation.sensor.service.impl;
 
 import com.kadir.smartirrigation.motor.dto.MotorStateDto;
 import com.kadir.smartirrigation.motor.dto.OnOffDto;
+import com.kadir.smartirrigation.common.enums.TurnOnStatus;
 import com.kadir.smartirrigation.motor.service.MotorService;
 import com.kadir.smartirrigation.sensor.dto.SensorlDataRequestDto;
 import com.kadir.smartirrigation.sensor.dto.SensorDataResponseDto;
+import com.kadir.smartirrigation.sensor.exception.SensorDataNotFoundException;
 import com.kadir.smartirrigation.sensor.model.SensorData;
 import com.kadir.smartirrigation.sensor.repository.SensorDataRepository;
 import com.kadir.smartirrigation.sensor.service.SensorDataService;
@@ -43,8 +45,9 @@ public class SensorDataServiceImpl implements SensorDataService {
 
     @Override
     public SensorDataResponseDto getLatestData() {
-        SensorData data = repository.findTopByOrderByTimestampDesc().orElse(null);
-        if (data == null) return null;
+        SensorData data = repository.findTopByOrderByTimestampDesc()
+                .orElseThrow(() -> new SensorDataNotFoundException("No sensor data found"));
+
         return new SensorDataResponseDto(
                 data.getSoilMoistureAdc(),
                 data.getBatteryPercent(),
@@ -65,6 +68,6 @@ public class SensorDataServiceImpl implements SensorDataService {
             newState.setStatus("OFF");
         }
 
-        motorService.updateStatus(newState, true);
+        motorService.updateStatus(newState, TurnOnStatus.AUTO);
     }
 }
