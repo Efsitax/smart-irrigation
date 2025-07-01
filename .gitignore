@@ -6,6 +6,9 @@ target/
 
 .DS_Store
 
+# Ignore Paho MQTT client temp folders
+/paho*-tcp*
+
 ### STS ###
 .apt_generated
 .classpath

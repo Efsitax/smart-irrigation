@@ -1,0 +1,37 @@
+package com.kadir.smartirrigation.application.service.sensor;
+
+import com.kadir.smartirrigation.web.dto.sensor.SensorDataDto;
+import com.kadir.smartirrigation.domain.model.SensorData;
+import com.kadir.smartirrigation.infastructure.repository.SensorDataRepository;
+import com.kadir.smartirrigation.domain.service.SensorDataService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class SensorDataServiceImpl implements SensorDataService {
+    private final SensorDataRepository repository;
+
+    @Override
+    public SensorDataDto save(SensorDataDto dto) {
+        SensorData sensorData = SensorData.builder()
+                .soilMoisturePercent(dto.soilMoisturePercent())
+                .batteryPercent(dto.batteryPercent())
+                .timestamp(dto.timestamp())
+                .build();
+        return toDto(repository.save(sensorData));
+    }
+
+    @Override
+    public SensorDataDto getLatestSensorData() {
+        return toDto(repository.findTopByOrderByTimestampDesc().orElseThrow());
+    }
+
+    private SensorDataDto toDto(SensorData data) {
+        return new SensorDataDto(
+                data.getSoilMoisturePercent(),
+                data.getBatteryPercent(),
+                data.getTimestamp()
+        );
+    }
+}

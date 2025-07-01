@@ -19,9 +19,9 @@ spring:
       path: /h2-console
   jackson:
     time-zone: Europe/Istanbul
+  main:
+    allow-bean-definition-overriding: true
 
 server:
   port: 8080
 
-irrigation:
-  threshold: 2000
