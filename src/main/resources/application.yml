@@ -25,3 +25,7 @@ spring:
 server:
   port: 8080
 
+weather:
+  api:
+    key: a2698fa3fd2522b59c7c92c91ad1bcef
+  location: Istanbul,TR

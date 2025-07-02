@@ -1,5 +1,6 @@
 package com.kadir.smartirrigation.application.service.sensor;
 
+import com.kadir.smartirrigation.common.exception.SensorDataNotFoundException;
 import com.kadir.smartirrigation.web.dto.sensor.SensorDataDto;
 import com.kadir.smartirrigation.domain.model.SensorData;
 import com.kadir.smartirrigation.infastructure.repository.SensorDataRepository;
@@ -24,7 +25,8 @@ public class SensorDataServiceImpl implements SensorDataService {
 
     @Override
     public SensorDataDto getLatestSensorData() {
-        return toDto(repository.findTopByOrderByTimestampDesc().orElseThrow());
+        return toDto(repository.findTopByOrderByTimestampDesc()
+                .orElseThrow(() -> new SensorDataNotFoundException("Sensor data not found")));
     }
 
     private SensorDataDto toDto(SensorData data) {

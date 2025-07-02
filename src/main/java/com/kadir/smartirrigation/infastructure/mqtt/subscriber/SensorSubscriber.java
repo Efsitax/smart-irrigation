@@ -1,8 +1,10 @@
 package com.kadir.smartirrigation.infastructure.mqtt.subscriber;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kadir.smartirrigation.common.exception.MqttConnectionException;
+import com.kadir.smartirrigation.common.exception.SensorDataFormatException;
 import com.kadir.smartirrigation.domain.service.SensorDataService;
 import com.kadir.smartirrigation.web.dto.sensor.SensorDataDto;
 import jakarta.annotation.PostConstruct;
@@ -43,8 +45,8 @@ public class SensorSubscriber {
 
                     log.info("Received MQTT Data - Moisture: {}%, Battery: {}%", moisture, battery);
 
-                } catch (Exception ex) {
-                    log.error("MQTT data couldn't be processed", ex);
+                } catch (NullPointerException | JsonProcessingException e) {
+                    throw new SensorDataFormatException("Invalid MQTT sensor data: " + e.getMessage());
                 }
             });
         } catch (MqttException e) {

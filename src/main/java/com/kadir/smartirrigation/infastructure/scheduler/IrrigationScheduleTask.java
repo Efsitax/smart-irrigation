@@ -1,4 +1,4 @@
-package com.kadir.smartirrigation.infastructure.task;
+package com.kadir.smartirrigation.infastructure.scheduler;
 
 import com.kadir.smartirrigation.domain.service.MotorService;
 import com.kadir.smartirrigation.domain.service.SensorDataService;

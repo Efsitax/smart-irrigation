@@ -1,15 +1,17 @@
 package com.kadir.smartirrigation.application.service.motor;
 
-import com.kadir.smartirrigation.domain.model.SensorData;
+import com.kadir.smartirrigation.common.exception.MotorNotFoundException;
 import com.kadir.smartirrigation.domain.service.MotorLogService;
+import com.kadir.smartirrigation.domain.service.SensorDataService;
+import com.kadir.smartirrigation.domain.service.TemperatureConfigService;
 import com.kadir.smartirrigation.infastructure.mqtt.publisher.MqttPublisherService;
-import com.kadir.smartirrigation.infastructure.repository.SensorDataRepository;
 import com.kadir.smartirrigation.web.dto.motor.MotorLogDto;
 import com.kadir.smartirrigation.web.dto.motor.MotorStateDto;
 import com.kadir.smartirrigation.domain.model.MotorState;
 import com.kadir.smartirrigation.infastructure.repository.MotorStateRepository;
 import com.kadir.smartirrigation.domain.service.MotorService;
 import com.kadir.smartirrigation.web.dto.motor.UpdateMotorStateRequestDto;
+import com.kadir.smartirrigation.web.dto.sensor.SensorDataDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,14 @@ import java.util.concurrent.TimeUnit;
 public class MotorServiceImpl implements MotorService {
     private final MotorStateRepository motorStateRepository;
     private final MotorLogService motorLogService;
-    private final SensorDataRepository sensorDataRepository;
+    private final SensorDataService sensorDataService;
+    private final TemperatureConfigService temperatureConfigService;
     private final MqttPublisherService mqttPublisher;
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     @Override
     public void evaluateAutoControl(float currentMoisturePercent) {
-        MotorState state = motorStateRepository.findById(1L).orElseThrow();
+        MotorState state = getMotorOrThrow();
 
         if (!state.isAutoControl()) {
             log.info("AutoControl is off, nothing to do.");
@@ -46,14 +49,21 @@ public class MotorServiceImpl implements MotorService {
 
     @Override
     public void turnOnForDuration(int seconds, String mode, float moisture) {
-        log.info("Motor is on for {} seconds...", seconds);
+        int finalSeconds = seconds;
+        if (temperatureConfigService.evaluateTemperature()) {
+            int extraSeconds = temperatureConfigService.getConfig().extraSeconds();
+            log.info("Weather temperature is above the threshold. Extra Seconds added ({} seconds).", extraSeconds);
+            finalSeconds += extraSeconds;
+        }
+
+        log.info("Motor is on for {} seconds...", finalSeconds);
         mqttPublisher.publish("motor/control", "ON");
         updateIsOn(true);
 
         motorLogService.saveMotorLog(new MotorLogDto(
                 mode,
                 LocalDateTime.now(),
-                seconds,
+                finalSeconds,
                 moisture
         ));
 
@@ -61,21 +71,20 @@ public class MotorServiceImpl implements MotorService {
             mqttPublisher.publish("motor/control", "OFF");
             updateIsOn(false);
             log.info("Time is up. Motor is off.");
-        }, seconds, TimeUnit.SECONDS);
+        }, finalSeconds, TimeUnit.SECONDS);
     }
 
     @Override
     public void turnOnManual() {
-        MotorState state = motorStateRepository.findById(1L).orElseThrow();
-        float latestMoisture = getLatestMoisture();
+        MotorState state = getMotorOrThrow();
         log.info("Manuel mod: Motor is on ({} seconds).", state.getManualDurationSeconds());
 
-        turnOnForDuration(state.getManualDurationSeconds(), "MANUAL", latestMoisture);
+        turnOnForDuration(state.getManualDurationSeconds(), "MANUAL", 0);
     }
 
     @Override
     public void updateState(UpdateMotorStateRequestDto dto) {
-        MotorState state = motorStateRepository.findById(1L).orElseThrow();
+        MotorState state = getMotorOrThrow();
 
         state.setAutoControl(dto.autoControl());
         state.setMoistureThreshold(dto.moistureThreshold());
@@ -87,7 +96,7 @@ public class MotorServiceImpl implements MotorService {
 
     @Override
     public MotorStateDto getCurrentState() {
-        MotorState state = motorStateRepository.findById(1L).orElseThrow();
+        MotorState state = getMotorOrThrow();
 
         return new MotorStateDto(
                 state.isAutoControl(),
@@ -100,13 +109,18 @@ public class MotorServiceImpl implements MotorService {
     }
 
     private void updateIsOn(boolean isOn) {
-        MotorState state = motorStateRepository.findById(1L).orElseThrow();
+        MotorState state = getMotorOrThrow();
         state.setOn(isOn);
         motorStateRepository.save(state);
     }
 
     private float getLatestMoisture() {
-        SensorData latest = sensorDataRepository.findTopByOrderByTimestampDesc().orElse(null);
-        return latest != null ? latest.getSoilMoisturePercent() : 0f;
+        SensorDataDto latest = sensorDataService.getLatestSensorData();
+        return latest != null ? latest.soilMoisturePercent() : 0f;
+    }
+
+    private MotorState getMotorOrThrow() {
+        return motorStateRepository.findById(1L)
+                .orElseThrow(() -> new MotorNotFoundException("Motor not found."));
     }
 }

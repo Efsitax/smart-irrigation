@@ -3,7 +3,6 @@ package com.kadir.smartirrigation.web.dto.schedule;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

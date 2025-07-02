@@ -38,8 +38,7 @@ public class IrrigationScheduleServiceImpl implements IrrigationScheduleService 
 
     @Override
     public void delete(Long id) {
-        IrrigationSchedule schedule = repository.findById(id)
-                .orElseThrow(() -> new ScheduleNotFoundException(id));
+        IrrigationSchedule schedule = getScheduleOrThrow(id);
         repository.delete(schedule);
     }
 
@@ -63,8 +62,7 @@ public class IrrigationScheduleServiceImpl implements IrrigationScheduleService 
 
     @Override
     public ScheduleResponseDto update(Long id, UpdateScheduleDto dto) {
-        IrrigationSchedule schedule = repository.findById(id)
-                .orElseThrow(() -> new ScheduleNotFoundException(id));
+        IrrigationSchedule schedule = getScheduleOrThrow(id);
 
         schedule.setTime(dto.time());
         schedule.setDays(dto.days());
@@ -77,10 +75,14 @@ public class IrrigationScheduleServiceImpl implements IrrigationScheduleService 
 
     @Override
     public void deactivateSchedule(Long id) {
-        IrrigationSchedule schedule = repository.findById(id)
-                .orElseThrow(() -> new ScheduleNotFoundException(id));
+        IrrigationSchedule schedule = getScheduleOrThrow(id);
         schedule.setActive(false);
         repository.save(schedule);
+    }
+
+    public IrrigationSchedule getScheduleOrThrow(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ScheduleNotFoundException(id));
     }
 
     private ScheduleResponseDto toDto(IrrigationSchedule schedule) {

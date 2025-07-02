@@ -1,12 +1,9 @@
 package com.kadir.smartirrigation.web.dto.schedule;
 
-import lombok.Data;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
-
 
 public record ScheduleResponseDto (
         Long id,
