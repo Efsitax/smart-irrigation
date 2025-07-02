@@ -2,7 +2,7 @@ package com.kadir.smartirrigation.web.controller;
 
 import com.kadir.smartirrigation.web.dto.schedule.CreateScheduleDto;
 import com.kadir.smartirrigation.web.dto.schedule.ScheduleResponseDto;
-import com.kadir.smartirrigation.domain.service.IrrigationScheduleService;
+import com.kadir.smartirrigation.domain.service.schedule.IrrigationScheduleService;
 import com.kadir.smartirrigation.web.dto.schedule.UpdateScheduleDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

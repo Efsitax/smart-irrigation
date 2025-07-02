@@ -2,7 +2,7 @@ package com.kadir.smartirrigation.application.service.temperature;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.kadir.smartirrigation.common.exception.TemperatureServiceException;
-import com.kadir.smartirrigation.domain.service.TemperatureService;
+import com.kadir.smartirrigation.domain.service.temperature.TemperatureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

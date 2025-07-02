@@ -2,9 +2,9 @@ package com.kadir.smartirrigation.application.service.sensor;
 
 import com.kadir.smartirrigation.common.exception.SensorDataNotFoundException;
 import com.kadir.smartirrigation.web.dto.sensor.SensorDataDto;
-import com.kadir.smartirrigation.domain.model.SensorData;
-import com.kadir.smartirrigation.infastructure.repository.SensorDataRepository;
-import com.kadir.smartirrigation.domain.service.SensorDataService;
+import com.kadir.smartirrigation.domain.model.sensor.SensorData;
+import com.kadir.smartirrigation.infrastructure.repository.sensor.SensorDataRepository;
+import com.kadir.smartirrigation.domain.service.sensor.SensorDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

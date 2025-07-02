@@ -1,10 +1,10 @@
 package com.kadir.smartirrigation.application.service.temperature;
 
 import com.kadir.smartirrigation.common.exception.TemperatureConfigNotFoundException;
-import com.kadir.smartirrigation.domain.model.TemperatureConfig;
-import com.kadir.smartirrigation.domain.service.TemperatureConfigService;
-import com.kadir.smartirrigation.domain.service.TemperatureService;
-import com.kadir.smartirrigation.infastructure.repository.TemperatureConfigRepository;
+import com.kadir.smartirrigation.domain.model.temperature.TemperatureConfig;
+import com.kadir.smartirrigation.domain.service.temperature.TemperatureConfigService;
+import com.kadir.smartirrigation.domain.service.temperature.TemperatureService;
+import com.kadir.smartirrigation.infrastructure.repository.temperature.TemperatureConfigRepository;
 import com.kadir.smartirrigation.web.dto.temperature.TemperatureConfigDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

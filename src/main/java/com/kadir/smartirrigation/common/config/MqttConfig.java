@@ -1,17 +1,16 @@
 package com.kadir.smartirrigation.common.config;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MqttConfig {
-    private static final String MQTT_BROKER_URL = "tcp://broker.hivemq.com:1883";
 
     @Bean
-    public MqttClient mqttClient() throws MqttException {
-        MqttClient client = new MqttClient(MQTT_BROKER_URL, MqttClient.generateClientId());
+    public MqttClient mqttClient() throws Exception {
+        MqttClient client = new MqttClient("tcp://broker.hivemq.com:1883", "backendClient", new MemoryPersistence());
         client.connect();
         return client;
     }

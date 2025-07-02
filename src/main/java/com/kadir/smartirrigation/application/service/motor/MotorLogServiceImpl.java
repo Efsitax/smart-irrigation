@@ -1,8 +1,8 @@
 package com.kadir.smartirrigation.application.service.motor;
 
-import com.kadir.smartirrigation.domain.model.MotorLog;
-import com.kadir.smartirrigation.domain.service.MotorLogService;
-import com.kadir.smartirrigation.infastructure.repository.MotorLogRepository;
+import com.kadir.smartirrigation.domain.model.motor.MotorLog;
+import com.kadir.smartirrigation.domain.service.motor.MotorLogService;
+import com.kadir.smartirrigation.infrastructure.repository.motor.MotorLogRepository;
 import com.kadir.smartirrigation.web.dto.motor.MotorLogDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

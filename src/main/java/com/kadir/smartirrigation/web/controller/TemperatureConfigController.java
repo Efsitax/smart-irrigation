@@ -1,6 +1,6 @@
 package com.kadir.smartirrigation.web.controller;
 
-import com.kadir.smartirrigation.domain.service.TemperatureConfigService;
+import com.kadir.smartirrigation.domain.service.temperature.TemperatureConfigService;
 import com.kadir.smartirrigation.web.dto.temperature.TemperatureConfigDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

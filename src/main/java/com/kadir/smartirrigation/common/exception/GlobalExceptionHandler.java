@@ -40,6 +40,11 @@ public class GlobalExceptionHandler {
         log.warn("Temperature service error: {}", ex.getMessage());
         return createErrorResponse(ex.getMessage(), request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @ExceptionHandler(NotificationException.class)
+    public ResponseEntity<ErrorResponse> handleNotificationException(NotificationException ex, HttpServletRequest request) {
+        log.warn("Notification error: {}", ex.getMessage());
+        return createErrorResponse(ex.getMessage(), request, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(MqttConnectionException.class)
     public ResponseEntity<ErrorResponse> handleMqttConnectionError(MqttConnectionException ex, HttpServletRequest request) {

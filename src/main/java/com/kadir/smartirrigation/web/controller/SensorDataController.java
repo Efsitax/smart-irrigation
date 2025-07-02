@@ -1,7 +1,7 @@
 package com.kadir.smartirrigation.web.controller;
 
 import com.kadir.smartirrigation.web.dto.sensor.SensorDataDto;
-import com.kadir.smartirrigation.domain.service.SensorDataService;
+import com.kadir.smartirrigation.domain.service.sensor.SensorDataService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

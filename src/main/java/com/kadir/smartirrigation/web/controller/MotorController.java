@@ -1,8 +1,8 @@
 package com.kadir.smartirrigation.web.controller;
 
-import com.kadir.smartirrigation.domain.service.MotorLogService;
+import com.kadir.smartirrigation.domain.service.motor.MotorLogService;
 import com.kadir.smartirrigation.web.dto.motor.*;
-import com.kadir.smartirrigation.domain.service.MotorService;
+import com.kadir.smartirrigation.domain.service.motor.MotorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
