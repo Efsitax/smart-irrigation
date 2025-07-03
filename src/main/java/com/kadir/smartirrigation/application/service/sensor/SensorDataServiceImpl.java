@@ -1,17 +1,20 @@
 package com.kadir.smartirrigation.application.service.sensor;
 
 import com.kadir.smartirrigation.common.exception.SensorDataNotFoundException;
+import com.kadir.smartirrigation.domain.event.LowBatteryEvent;
 import com.kadir.smartirrigation.web.dto.sensor.SensorDataDto;
 import com.kadir.smartirrigation.domain.model.sensor.SensorData;
 import com.kadir.smartirrigation.infrastructure.repository.sensor.SensorDataRepository;
 import com.kadir.smartirrigation.domain.service.sensor.SensorDataService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class SensorDataServiceImpl implements SensorDataService {
     private final SensorDataRepository repository;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public SensorDataDto save(SensorDataDto dto) {
@@ -27,6 +30,13 @@ public class SensorDataServiceImpl implements SensorDataService {
     public SensorDataDto getLatestSensorData() {
         return toDto(repository.findTopByOrderByTimestampDesc()
                 .orElseThrow(() -> new SensorDataNotFoundException("Sensor data not found")));
+    }
+
+    @Override
+    public void evaluateBattery(double battery) {
+        if (battery <= 20.0) {
+            publisher.publishEvent(new LowBatteryEvent(battery));
+        }
     }
 
     private SensorDataDto toDto(SensorData data) {

@@ -34,6 +34,7 @@ public class MotorServiceImpl implements MotorService {
         MotorState state = getMotorOrThrow();
 
         if (!state.isAutoControl()) {
+            publisher.publishEvent(new LowSoilMoistureEvent(currentMoisturePercent));
             return;
         }
         if (state.isOn()) {
@@ -43,7 +44,6 @@ public class MotorServiceImpl implements MotorService {
 
         float threshold = state.getMoistureThreshold();
         if (currentMoisturePercent < threshold) {
-            publisher.publishEvent(new LowSoilMoistureEvent(currentMoisturePercent));
             turnOnForDuration(state.getAutoDurationSeconds(), "AUTO", currentMoisturePercent);
         }
     }
