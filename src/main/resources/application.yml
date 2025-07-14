@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: smart-irrigation
+  jackson:
+    time-zone: Europe/Istanbul
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/smart_irrigation
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+server:
+  port: 8080
+
+weather:
+  api:
+    key: a2698fa3fd2522b59c7c92c91ad1bcef
+  location: Istanbul,TR
